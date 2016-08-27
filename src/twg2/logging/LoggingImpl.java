@@ -2,7 +2,6 @@ package twg2.logging;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,37 +15,7 @@ import java.util.logging.Logger;
  * @since 2013-8-10
  */
 public final class LoggingImpl implements Logging {
-
-
-	public static enum PrefixFormat implements Logging.Formatter {
-		NONE() {
-			@Override public void format(PrintStream out, Level level, Class<?> cls) {
-				// do nothing
-			}
-		},
-
-		LEVEL() {
-			@Override public void format(PrintStream out, Level level, Class<?> cls) {
-				out.printf("%d, ", level.intValue());
-			}
-		},
-
-		LEVEL_AND_CLASS() {
-			@Override public void format(PrintStream out, Level level, Class<?> cls) {
-				out.printf("%d, [%s] ", level.intValue(), cls.getCanonicalName());
-			}
-		},
-
-		DATETIME_LEVEL_AND_CLASS() {
-			@Override public void format(PrintStream out, Level level, Class<?> cls) {
-				out.printf("[%s] %d, [%s] ", dateFormater.format(Instant.now()), level.intValue(), cls.getCanonicalName());
-			}
-		};
-
-	}
-
-
-	private static final DateTimeFormatter dateFormater = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
+	static final DateTimeFormatter dateFormater = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
 	private boolean doPrintLog = true;
 	private PrintStream output;
 	private Logging.Formatter format;

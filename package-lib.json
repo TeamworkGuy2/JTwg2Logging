@@ -1,10 +1,10 @@
 {
-	"version" : "0.1.0",
+	"version" : "0.2.0",
 	"name" : "jtwg2-logging",
 	"description" : "Simple logging interfaces and implementations to skip the complexity of a full logging framework, follows the java.util.logging API",
 	"homepage" : "https://github.com/TeamworkGuy2/JTwg2Logging",
 	"license" : "MIT",
-	"main" : "./jar/jtwg2_logging.jar",
+	"main" : "./bin/jtwg2_logging.jar",
 	"dependencies" : {
 	}
 }
