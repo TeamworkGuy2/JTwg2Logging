@@ -4,7 +4,27 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-###[0.2.0](N/A) - 2016-2-28
+###[0.3.0](N/A) - 2017-12-30
+#### Changed
+* Upgrade to Java 9
+* Upgrade to JUnit 5
+__Renamed everything except `Twg2Logs`__
+* `LogWrapper` -> `Logger`
+* `LogWrapperImpl` -> `LoggerImpl`
+* `LogWrapperMulti` -> `LoggerMulti`
+* `Logging` -> `LogService`
+* `LoggingImpl` -> `LogServiceImpl`
+* `LoggingMulti` -> `LogServiceMulti`
+* `LoggingPrefixFormat` -> `LogPrefixFormat`
+* `Logging.Formatter` -> `LogService.PrefixFormatter`
+* Moved `Logging.wouldLog(LogWrapper, Level)` -> `Logger.wouldLog(Logger, Level)`
+
+#### Removed
+* Removed `log(...)` overloads with more than 3 extra data parameters
+
+
+--------
+###[0.2.0](https://github.com/TeamworkGuy2/JTwg2Logging/commit/73213e7da2464e9bb1556e9fb6930539d9825d18) - 2016-2-28
 #### Changed
 * Moved LoggingImpl.PrefixFormat to separate LoggingPrefixFormat enum
 * Changed compiled jar path

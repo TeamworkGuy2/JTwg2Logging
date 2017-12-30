@@ -9,19 +9,19 @@ import java.util.logging.Level;
  * @author TeamworkGuy2
  * @since 2014-12-6
  */
-public class LogWrapperImpl implements LogWrapper, Closeable {
-	private Logging log;
+public class LoggerImpl implements Logger, Closeable {
+	private LogService log;
 	private Class<?> type;
 	private int level;
 	private Level levelObj;
 
 
-	public LogWrapperImpl(Logging log, Class<?> type) {
+	public LoggerImpl(LogService log, Class<?> type) {
 		this(log, type, log.getLevel(), log.getLevelValue());
 	}
 
 
-	public LogWrapperImpl(Logging log, Class<?> type, Level level) {
+	public LoggerImpl(LogService log, Class<?> type, Level level) {
 		this(log, type, level, level.intValue());
 	}
 
@@ -31,7 +31,7 @@ public class LogWrapperImpl implements LogWrapper, Closeable {
 	 * @param type
 	 * @param level
 	 */
-	public LogWrapperImpl(Logging log, Class<?> type, Level levelObj, int level) {
+	public LoggerImpl(LogService log, Class<?> type, Level levelObj, int level) {
 		this.log = log;
 		this.type = type;
 		this.level = level;
@@ -68,7 +68,7 @@ public class LogWrapperImpl implements LogWrapper, Closeable {
 	/**
 	 * @return the underlying logger that this log wrapper logs to
 	 */
-	public Logging getWrappedLog() {
+	public LogService getWrappedLog() {
 		return this.log;
 	}
 
@@ -109,14 +109,6 @@ public class LogWrapperImpl implements LogWrapper, Closeable {
 	public void log(Level level, String msg, String strA, String strB, String strC, Throwable thrown) {
 		if(level.intValue() >= this.level) {
 			log.log(level, type, msg, strA, strB, strC, thrown);
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, String strA, String strB, String strC, String strD, Throwable thrown) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, strA, strB, strC, strD, thrown);
 		}
 	}
 
@@ -170,33 +162,6 @@ public class LogWrapperImpl implements LogWrapper, Closeable {
 
 
 	@Override
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, paramA, paramB, paramC, paramD);
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD, Object paramE) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, paramA, paramB, paramC, paramD, paramE);
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD, Object paramE, Object paramF) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, paramA, paramB, paramC, paramD, paramE, paramF);
-		}
-	}
-
-
-	@Override
 	public void log(Level level, String msg, Object param, Throwable thrown) {
 		if(level.intValue() >= this.level) {
 			log.log(level, type, msg, param, thrown);
@@ -229,30 +194,6 @@ public class LogWrapperImpl implements LogWrapper, Closeable {
 
 
 	@Override
-	public void log(Level level, String msg, int a, int b, int c, int d) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, a, b, c, d);
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, int a, int b, int c, int d, int e) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, a, b, c, d, e);
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, int a, int b, int c, int d, int e, int f) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, a, b, c, d, e, f);
-		}
-	}
-
-
-	@Override
 	public void log(Level level, String msg, float a) {
 		if(level.intValue() >= this.level) {
 			log.log(level, type, msg, a);
@@ -272,30 +213,6 @@ public class LogWrapperImpl implements LogWrapper, Closeable {
 	public void log(Level level, String msg, float a, float b, float c) {
 		if(level.intValue() >= this.level) {
 			log.log(level, type, msg, a, b, c);
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, float a, float b, float c, float d) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, a, b, c, d);
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, float a, float b, float c, float d, float e) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, a, b, c, d, e);
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, float a, float b, float c, float d, float e, float f) {
-		if(level.intValue() >= this.level) {
-			log.log(level, type, msg, a, b, c, d, e, f);
 		}
 	}
 
@@ -332,9 +249,9 @@ public class LogWrapperImpl implements LogWrapper, Closeable {
 	}
 
 
-	/** Closing this log wrapper closes the underlying {@link Logging} instance
-	 * which may also close other {@link LogWrapper LogWrappers} associated with
-	 * the underlying {@link Logging} instance.
+	/** Closing this log wrapper closes the underlying {@link LogService} instance
+	 * which may also close other {@link Logger LogWrappers} associated with
+	 * the underlying {@link LogService} instance.
 	 */
 	@Override
 	public void close() throws IOException {

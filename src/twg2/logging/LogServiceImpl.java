@@ -7,22 +7,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /** A logging utility for logging message.
  * More controlled than System.out, I haven't quite gotten around to using {@link Logger}
  * @author TeamworkGuy2
  * @since 2013-8-10
  */
-public final class LoggingImpl implements Logging {
+public final class LogServiceImpl implements LogService {
 	static final DateTimeFormatter dateFormater = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
 	private boolean doPrintLog = true;
 	private PrintStream output;
-	private Logging.Formatter format;
+	private LogService.PrefixFormatter format;
 	private PrintStream output2;
-	private Logging.Formatter format2;
+	private LogService.PrefixFormatter format2;
 	private PrintStream output3;
-	private Logging.Formatter format3;
+	private LogService.PrefixFormatter format3;
 	private Level level;
 	private int levelValue;
 	private ArrayList<Level> levels;
@@ -37,17 +36,17 @@ public final class LoggingImpl implements Logging {
 	 * @param level the {@link Level} of messages to log
 	 * @param outputStream the output stream to print messages to
 	 */
-	public LoggingImpl(Level level, PrintStream outputStream, Logging.Formatter format) {
+	public LogServiceImpl(Level level, PrintStream outputStream, PrefixFormatter format) {
 		this(level, outputStream, format, null, null, null, null);
 	}
 
 
-	public LoggingImpl(Level level, PrintStream outputStream, Logging.Formatter format, PrintStream outputStream2, Logging.Formatter format2) {
+	public LogServiceImpl(Level level, PrintStream outputStream, PrefixFormatter format, PrintStream outputStream2, PrefixFormatter format2) {
 		this(level, outputStream, format, outputStream2, format2, null, null);
 	}
 
 
-	public LoggingImpl(Level level, PrintStream outputStream, Logging.Formatter format, PrintStream outputStream2, Logging.Formatter format2, PrintStream outputStream3, Logging.Formatter format3) {
+	public LogServiceImpl(Level level, PrintStream outputStream, PrefixFormatter format, PrintStream outputStream2, PrefixFormatter format2, PrintStream outputStream3, PrefixFormatter format3) {
 		this.level = level;
 		this.output = outputStream;
 		this.format = format;
@@ -69,8 +68,8 @@ public final class LoggingImpl implements Logging {
 
 
 	@Override
-	public LogWrapper createWrapperFor(Class<?> type) {
-		return new LogWrapperImpl(this, type);
+	public Logger createLogger(Class<?> type) {
+		return new LoggerImpl(this, type);
 	}
 
 
@@ -167,26 +166,6 @@ public final class LoggingImpl implements Logging {
 				params.add(strA);
 				params.add(strB);
 				params.add(strC);
-				output();
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> clazz, String msg, String strA, String strB, String strC, String strD,
-			Throwable thrown) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(thrown);
-				paramStartIndex.add(params.size());
-				params.add(strA);
-				params.add(strB);
-				params.add(strC);
-				params.add(strD);
 				output();
 			}
 		}
@@ -300,72 +279,6 @@ public final class LoggingImpl implements Logging {
 
 
 	@Override
-	public void log(Level level, Class<?> clazz, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				ArrayList<Object> parameters = params;
-				paramStartIndex.add(parameters.size());
-				parameters.add(paramA);
-				parameters.add(paramB);
-				parameters.add(paramC);
-				parameters.add(paramD);
-				output();
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> clazz, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD, Object paramE) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				paramStartIndex.add(params.size());
-				ArrayList<Object> parameters = params;
-				parameters.add(paramA);
-				parameters.add(paramB);
-				parameters.add(paramC);
-				parameters.add(paramD);
-				parameters.add(paramE);
-				output();
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> clazz, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD, Object paramE, Object paramF) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				paramStartIndex.add(params.size());
-				ArrayList<Object> parameters = params;
-				parameters.add(paramA);
-				parameters.add(paramB);
-				parameters.add(paramC);
-				parameters.add(paramD);
-				parameters.add(paramE);
-				parameters.add(paramF);
-				output();
-			}
-		}
-	}
-
-
-	@Override
 	public void log(Level level, Class<?> clazz, String msg, Object param, Throwable thrown) {
 		if(level.intValue() >= this.levelValue) {
 			synchronized(this) {
@@ -435,69 +348,6 @@ public final class LoggingImpl implements Logging {
 
 
 	@Override
-	public void log(Level level, Class<?> clazz, String msg, int a, int b, int c, int d) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				ArrayList<Object> parameters = params;
-				paramStartIndex.add(parameters.size());
-				parameters.add(a);
-				parameters.add(b);
-				parameters.add(c);
-				parameters.add(d);
-				output();
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> clazz, String msg, int a, int b, int c, int d, int e) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				ArrayList<Object> parameters = params;
-				paramStartIndex.add(parameters.size());
-				parameters.add(a);
-				parameters.add(b);
-				parameters.add(c);
-				parameters.add(d);
-				parameters.add(e);
-				output();
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> clazz, String msg, int a, int b, int c, int d, int e, int f) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				ArrayList<Object> parameters = params;
-				paramStartIndex.add(parameters.size());
-				parameters.add(a);
-				parameters.add(b);
-				parameters.add(c);
-				parameters.add(d);
-				parameters.add(e);
-				parameters.add(f);
-				output();
-			}
-		}
-	}
-
-
-	@Override
 	public void log(Level level, Class<?> clazz, String msg, float a) {
 		if(level.intValue() >= this.levelValue) {
 			synchronized(this) {
@@ -544,69 +394,6 @@ public final class LoggingImpl implements Logging {
 				parameters.add(a);
 				parameters.add(b);
 				parameters.add(c);
-				output();
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> clazz, String msg, float a, float b, float c, float d) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				ArrayList<Object> parameters = params;
-				paramStartIndex.add(parameters.size());
-				parameters.add(a);
-				parameters.add(b);
-				parameters.add(c);
-				parameters.add(d);
-				output();
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> clazz, String msg, float a, float b, float c, float d, float e) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				ArrayList<Object> parameters = params;
-				paramStartIndex.add(parameters.size());
-				parameters.add(a);
-				parameters.add(b);
-				parameters.add(c);
-				parameters.add(d);
-				parameters.add(e);
-				output();
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> clazz, String msg, float a, float b, float c, float d, float e, float f) {
-		if(level.intValue() >= this.levelValue) {
-			synchronized(this) {
-				levels.add(level);
-				classes.add(clazz);
-				messages.add(msg);
-				errors.add(null);
-				ArrayList<Object> parameters = params;
-				paramStartIndex.add(parameters.size());
-				parameters.add(a);
-				parameters.add(b);
-				parameters.add(c);
-				parameters.add(d);
-				parameters.add(e);
-				parameters.add(f);
 				output();
 			}
 		}
@@ -704,7 +491,7 @@ public final class LoggingImpl implements Logging {
 	}
 
 
-	private void output(PrintStream out, Logging.Formatter format) {
+	private void output(PrintStream out, PrefixFormatter format) {
 		if(!doPrintLog) {
 			return;
 		}

@@ -4,7 +4,7 @@ import java.io.PrintStream;
 import java.time.Instant;
 import java.util.logging.Level;
 
-public enum LoggingPrefixFormat implements Logging.Formatter {
+public enum LogPrefixFormat implements LogService.PrefixFormatter {
 	NONE() {
 		@Override public void format(PrintStream out, Level level, Class<?> cls) {
 			// do nothing
@@ -25,7 +25,7 @@ public enum LoggingPrefixFormat implements Logging.Formatter {
 
 	DATETIME_LEVEL_AND_CLASS() {
 		@Override public void format(PrintStream out, Level level, Class<?> cls) {
-			out.printf("[%s] %d, [%s] ", LoggingImpl.dateFormater.format(Instant.now()), level.intValue(), cls.getCanonicalName());
+			out.printf("[%s] %d, [%s] ", LogServiceImpl.dateFormater.format(Instant.now()), level.intValue(), cls.getCanonicalName());
 		}
 	};
 

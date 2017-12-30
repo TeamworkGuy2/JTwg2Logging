@@ -2,16 +2,18 @@ package twg2.logging;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-/**
+/** A {@link Logger} which logs to multiple {@link LogService}s
  * @author TeamworkGuy2
  * @since 2014-12-6
  */
-public class LogWrapperMulti implements LogWrapper, Closeable {
-	private Logging[] logs;
+public class LoggerMulti implements Logger, Closeable {
+	private LogService[] logs;
 	private Class<?>[] types;
 	private int[] levels;
 	private Level[] levelObjs;
@@ -20,42 +22,44 @@ public class LogWrapperMulti implements LogWrapper, Closeable {
 
 
 	@SafeVarargs
-	public LogWrapperMulti(LogWrapperImpl... logs) {
-		this(extractLogClasses(logs), extractLogs(logs));
+	public LoggerMulti(LoggerImpl... logs) {
+		this(toEntries(extractLogs(logs), extractLogClasses(logs)));
 	}
 
 
 	/**
 	 * @param logsAry the set of logs create a logging wrapper for
 	 */
-	public LogWrapperMulti(Class<?>[] typesAry, Logging[] logsAry) {
+	public LoggerMulti(Class<?>[] typesAry, LogService[] logsAry) {
+		this(toEntries(logsAry, typesAry));
+	}
+
+
+	public LoggerMulti(Entry<LogService, Class<?>>[] logsAry) {
+		Arrays.sort(logsAry, (l1, l2) -> {
+			int v1 = l1.getKey().getLevelValue();
+			int v2 = l2.getKey().getLevelValue();
+			return v1 > v2 ? 1 : (v1 < v2 ? -1 : 0);
+		});
+
 		int logCount = logsAry.length;
 
-		this.logs = new Logging[logCount];
+		this.logs = new LogService[logCount];
 		this.types = new Class[logCount];
 		this.levels = new int[logCount];
 		this.levelObjs = new Level[logCount];
 
+		Level leastLevelObj = null;
 		for(int i = 0; i < logCount; i++) {
-			Logging logI = logsAry[i];
-			this.logs[i] = logI;
-			this.types[i] = typesAry[i];
-			this.levelObjs[i] = logI.getLevel();
-			this.levels[i] = logI.getLevelValue();
+			Entry<LogService, Class<?>> logI = logsAry[i];
+			this.logs[i] = logI.getKey();
+			this.types[i] = logI.getValue();
+			this.levelObjs[i] = logI.getKey().getLevel();
+			this.levels[i] = logI.getKey().getLevelValue();
+			if(leastLevelObj == null || logI.getKey().getLevelValue() > leastLevelObj.intValue()) {
+				leastLevelObj = logI.getKey().getLevel();
+			}
 		}
-
-		Arrays.sort(logsAry, (l1, l2) -> {
-			int v1 = l1.getLevelValue();
-			int v2 = l2.getLevelValue();
-			return v1 > v2 ? 1 : (v1 < v2 ? -1 : 0);
-		});
-		Arrays.sort(levelObjs, (l1, l2) -> {
-			int v1 = l1.intValue();
-			int v2 = l2.intValue();
-			return v1 > v2 ? 1 : (v1 < v2 ? -1 : 0);
-		});
-
-		Arrays.sort(levels);
 
 		this.leastLevel = levels[0];
 		this.leastLevelObj = levelObjs[0];
@@ -151,20 +155,6 @@ public class LogWrapperMulti implements LogWrapper, Closeable {
 
 
 	@Override
-	public void log(Level level, String msg, String strA, String strB, String strC, String strD, Throwable thrown) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, strA, strB, strC, strD, thrown);
-			}
-		}
-	}
-
-
-	@Override
 	public void log(Level level, String msg, String str) {
 		int levelVal = level.intValue();
 		if(levelVal >= this.leastLevel) {
@@ -249,51 +239,6 @@ public class LogWrapperMulti implements LogWrapper, Closeable {
 
 
 	@Override
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, paramA, paramB, paramC, paramD);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD, Object paramE) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, paramA, paramB, paramC, paramD, paramE);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD, Object paramE, Object paramF) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, paramA, paramB, paramC, paramD, paramE, paramF);
-			}
-		}
-	}
-
-
-	@Override
 	public void log(Level level, String msg, Object param, Throwable thrown) {
 		int levelVal = level.intValue();
 		if(levelVal >= this.leastLevel) {
@@ -350,48 +295,6 @@ public class LogWrapperMulti implements LogWrapper, Closeable {
 
 
 	@Override
-	public void log(Level level, String msg, int a, int b, int c, int d) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, a, b, c, d);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, int a, int b, int c, int d, int e) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, a, b, c, d, e);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, int a, int b, int c, int d, int e, int f) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, a, b, c, d, e, f);
-			}
-		}
-	}
-
-
-	@Override
 	public void log(Level level, String msg, float a) {
 		int levelVal = level.intValue();
 		if(levelVal >= this.leastLevel) {
@@ -428,48 +331,6 @@ public class LogWrapperMulti implements LogWrapper, Closeable {
 					break;
 				}
 				logs[i].log(level, types[i], msg, a, b, c);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, float a, float b, float c, float d) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, a, b, c, d);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, float a, float b, float c, float d, float e) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, a, b, c, d, e);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, String msg, float a, float b, float c, float d, float e, float f) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, types[i], msg, a, b, c, d, e, f);
 			}
 		}
 	}
@@ -531,9 +392,9 @@ public class LogWrapperMulti implements LogWrapper, Closeable {
 	}
 
 
-	/** Closing this log wrapper closes the underlying {@link Logging} instance
-	 * which may also close other {@link LogWrapper LogWrappers} associated with
-	 * the underlying {@link Logging} instance.
+	/** Closing this log wrapper closes the underlying {@link LogService} instance
+	 * which may also close other {@link Logger LogWrappers} associated with
+	 * the underlying {@link LogService} instance.
 	 */
 	@Override
 	public void close() throws IOException {
@@ -550,7 +411,7 @@ public class LogWrapperMulti implements LogWrapper, Closeable {
 
 
 	@SafeVarargs
-	static final Class<?>[] extractLogClasses(LogWrapperImpl... logs) {
+	static final Class<?>[] extractLogClasses(LoggerImpl... logs) {
 		int logCount = logs.length;
 		Class<?>[] logTypes = new Class[logCount];
 		for(int i = 0; i < logCount; i++) {
@@ -561,13 +422,24 @@ public class LogWrapperMulti implements LogWrapper, Closeable {
 
 
 	@SafeVarargs
-	static final Logging[] extractLogs(LogWrapperImpl... logs) {
+	static final LogService[] extractLogs(LoggerImpl... logs) {
 		int logCount = logs.length;
-		Logging[] loggers = new Logging[logCount];
+		LogService[] loggers = new LogService[logCount];
 		for(int i = 0; i < logCount; i++) {
 			loggers[i] = logs[i].getWrappedLog();
 		}
 		return loggers;
+	}
+
+
+	static final Entry<LogService, Class<?>>[] toEntries(LogService[] logsAry, Class<?>[] typesAry) {
+		int logCount = logsAry.length;
+		@SuppressWarnings("unchecked")
+		Entry<LogService, Class<?>>[] entries = new Entry[logCount];
+		for(int i = 0; i < logCount; i++) {
+			entries[i] = new AbstractMap.SimpleImmutableEntry<>(logsAry[i], typesAry[i]);
+		}
+		return entries;
 	}
 
 }

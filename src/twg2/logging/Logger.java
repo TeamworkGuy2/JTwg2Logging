@@ -3,11 +3,11 @@ package twg2.logging;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-/** A {@link Logging} wrapper for a specific class
+/** A {@link LogService} wrapper for a specific class
  * @author TeamworkGuy2
  * @since 2015-2-7
  */
-public interface LogWrapper {
+public interface Logger {
 
 	/**
 	 * @return the current logging level of this wrapper, values greater than this level
@@ -38,8 +38,6 @@ public interface LogWrapper {
 
 	public void log(Level level, String msg, String strA, String strB, String strC, Throwable thrown);
 
-	public void log(Level level, String msg, String strA, String strB, String strC, String strD, Throwable thrown);
-
 	public void log(Level level, String msg, String str);
 
 	public void log(Level level, String msg, String strA, String strB);
@@ -52,12 +50,6 @@ public interface LogWrapper {
 
 	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC);
 
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC, Object paramD);
-
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC, Object paramD, Object paramE);
-
-	public void log(Level level, String msg, Object paramA, Object paramB, Object paramC, Object paramD, Object paramE, Object paramF);
-
 	public void log(Level level, String msg, Object param, Throwable thrown);
 
 	public void log(Level level, String msg, int a);
@@ -66,23 +58,11 @@ public interface LogWrapper {
 
 	public void log(Level level, String msg, int a, int b, int c);
 
-	public void log(Level level, String msg, int a, int b, int c, int d);
-
-	public void log(Level level, String msg, int a, int b, int c, int d, int e);
-
-	public void log(Level level, String msg, int a, int b, int c, int d, int e, int f);
-
 	public void log(Level level, String msg, float a);
 
 	public void log(Level level, String msg, float a, float b);
 
 	public void log(Level level, String msg, float a, float b, float c);
-
-	public void log(Level level, String msg, float a, float b, float c, float d);
-
-	public void log(Level level, String msg, float a, float b, float c, float d, float e);
-
-	public void log(Level level, String msg, float a, float b, float c, float d, float e, float f);
 
 	public void log(Level level, String msg, Object[] paramAry);
 
@@ -91,5 +71,12 @@ public interface LogWrapper {
 	public void log(Level level, Supplier<String> msgSupplier);
 
 	public void log(Level level, Throwable thrown, Supplier<String> msgSupplier);
+
+
+	/** Whether the specified {@code Logger} would log a message at the specified log level
+	 */
+	public static boolean wouldLog(Logger log, Level level) {
+		return log != null && log.wouldLog(level);
+	}
 
 }

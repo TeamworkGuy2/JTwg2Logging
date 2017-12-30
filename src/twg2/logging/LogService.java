@@ -8,11 +8,16 @@ import java.util.logging.Level;
 /** A simple alternative to the Java {@link java.util.logging} package, useful for small projects
  * @author TeamworkGuy2
  * @since 2015-2-7
- * @see LoggingImpl
+ * @see LogServiceImpl
  */
-public interface Logging extends Closeable {
+public interface LogService extends Closeable {
 
-	public static interface Formatter {
+
+	/** Logging prefix formatter
+	 * @author TeamworkGuy2
+	 * @since 2015-2-7
+	 */
+	public static interface PrefixFormatter {
 
 		public void format(PrintStream out, Level level, Class<?> cls);
 
@@ -23,9 +28,9 @@ public interface Logging extends Closeable {
 
 	/** Create a log wrapper which forwards calls to this logging instance
 	 * @param type the class type of the class that will be logging information
-	 * @return the new {@link LogWrapperImpl} that forwards logging calls to this logging instance
+	 * @return the new {@link LoggerImpl} that forwards logging calls to this logging instance
 	 */
-	public LogWrapper createWrapperFor(Class<?> type);
+	public Logger createLogger(Class<?> type);
 
 	/**
 	 * @return the current logging level, values greater than this level are saved,
@@ -56,8 +61,6 @@ public interface Logging extends Closeable {
 
 	public void log(Level level, Class<?> clazz, String msg, String strA, String strB, String strC, Throwable thrown);
 
-	public void log(Level level, Class<?> clazz, String msg, String strA, String strB, String strC, String strD, Throwable thrown);
-
 	public void log(Level level, Class<?> clazz, String msg, String str);
 
 	public void log(Level level, Class<?> clazz, String msg, String strA, String strB);
@@ -70,12 +73,6 @@ public interface Logging extends Closeable {
 
 	public void log(Level level, Class<?> clazz, String msg, Object paramA, Object paramB, Object paramC);
 
-	public void log(Level level, Class<?> clazz, String msg, Object paramA, Object paramB, Object paramC, Object paramD);
-
-	public void log(Level level, Class<?> clazz, String msg, Object paramA, Object paramB, Object paramC, Object paramD, Object paramE);
-
-	public void log(Level level, Class<?> clazz, String msg, Object paramA, Object paramB, Object paramC, Object paramD, Object paramE, Object paramF);
-
 	public void log(Level level, Class<?> clazz, String msg, Object param, Throwable thrown);
 
 	public void log(Level level, Class<?> clazz, String msg, int a);
@@ -84,23 +81,11 @@ public interface Logging extends Closeable {
 
 	public void log(Level level, Class<?> clazz, String msg, int a, int b, int c);
 
-	public void log(Level level, Class<?> clazz, String msg, int a, int b, int c, int d);
-
-	public void log(Level level, Class<?> clazz, String msg, int a, int b, int c, int d, int e);
-
-	public void log(Level level, Class<?> clazz, String msg, int a, int b, int c, int d, int e, int f);
-
 	public void log(Level level, Class<?> clazz, String msg, float a);
 
 	public void log(Level level, Class<?> clazz, String msg, float a, float b);
 
 	public void log(Level level, Class<?> clazz, String msg, float a, float b, float c);
-
-	public void log(Level level, Class<?> clazz, String msg, float a, float b, float c, float d);
-
-	public void log(Level level, Class<?> clazz, String msg, float a, float b, float c, float d, float e);
-
-	public void log(Level level, Class<?> clazz, String msg, float a, float b, float c, float d, float e, float f);
 
 	public void log(Level level, Class<?> clazz, String msg, Object[] paramAry);
 
@@ -111,12 +96,9 @@ public interface Logging extends Closeable {
 	public void log(Level level, Class<?> clazz, Throwable thrown, Supplier<String> msgSupplier);
 
 
-	public static boolean wouldLog(Logging log, Level level) {
-		return log != null && log.wouldLog(level);
-	}
-
-
-	public static boolean wouldLog(LogWrapper log, Level level) {
+	/** Whether the specified {@code LogService} would log a message at the specified log level
+	 */
+	public static boolean wouldLog(LogService log, Level level) {
 		return log != null && log.wouldLog(level);
 	}
 

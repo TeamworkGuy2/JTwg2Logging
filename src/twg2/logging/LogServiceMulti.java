@@ -10,8 +10,8 @@ import java.util.logging.Level;
  * @author TeamworkGuy2
  * @since 2014-12-6
  */
-public class LoggingMulti implements Logging, Closeable {
-	private Logging[] logs;
+public class LogServiceMulti implements LogService, Closeable {
+	private LogService[] logs;
 	private int[] levels;
 	private Level[] levelObjs;
 	private int leastLevel;
@@ -22,15 +22,15 @@ public class LoggingMulti implements Logging, Closeable {
 	 * @param logsAry the set of logs create a logging wrapper for
 	 */
 	@SafeVarargs
-	public LoggingMulti(Logging... logsAry) {
+	public LogServiceMulti(LogService... logsAry) {
 		int logCount = logsAry.length;
 
-		this.logs = new Logging[logCount];
+		this.logs = new LogService[logCount];
 		this.levels = new int[logCount];
 		this.levelObjs = new Level[logCount];
 
 		for(int i = 0; i < logCount; i++) {
-			Logging logI = logsAry[i];
+			LogService logI = logsAry[i];
 			this.logs[i] = logI;
 			this.levelObjs[i] = logI.getLevel();
 			this.levels[i] = logI.getLevelValue();
@@ -66,10 +66,10 @@ public class LoggingMulti implements Logging, Closeable {
 
 
 	@Override
-	public LogWrapper createWrapperFor(Class<?> type) {
+	public Logger createLogger(Class<?> type) {
 		Class<?>[] types = new Class[this.logs.length];
 		Arrays.fill(types, type);
-		return new LogWrapperMulti(types, this.logs);
+		return new LoggerMulti(types, this.logs);
 	}
 
 
@@ -144,20 +144,6 @@ public class LoggingMulti implements Logging, Closeable {
 					break;
 				}
 				logs[i].log(level, type, msg, strA, strB, strC, thrown);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> type, String msg, String strA, String strB, String strC, String strD, Throwable thrown) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, strA, strB, strC, strD, thrown);
 			}
 		}
 	}
@@ -248,51 +234,6 @@ public class LoggingMulti implements Logging, Closeable {
 
 
 	@Override
-	public void log(Level level, Class<?> type, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, paramA, paramB, paramC, paramD);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> type, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD, Object paramE) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, paramA, paramB, paramC, paramD, paramE);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> type, String msg, Object paramA, Object paramB, Object paramC,
-			Object paramD, Object paramE, Object paramF) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, paramA, paramB, paramC, paramD, paramE, paramF);
-			}
-		}
-	}
-
-
-	@Override
 	public void log(Level level, Class<?> type, String msg, Object param, Throwable thrown) {
 		int levelVal = level.intValue();
 		if(levelVal >= this.leastLevel) {
@@ -349,48 +290,6 @@ public class LoggingMulti implements Logging, Closeable {
 
 
 	@Override
-	public void log(Level level, Class<?> type, String msg, int a, int b, int c, int d) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, a, b, c, d);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> type, String msg, int a, int b, int c, int d, int e) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, a, b, c, d, e);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> type, String msg, int a, int b, int c, int d, int e, int f) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, a, b, c, d, e, f);
-			}
-		}
-	}
-
-
-	@Override
 	public void log(Level level, Class<?> type, String msg, float a) {
 		int levelVal = level.intValue();
 		if(levelVal >= this.leastLevel) {
@@ -427,48 +326,6 @@ public class LoggingMulti implements Logging, Closeable {
 					break;
 				}
 				logs[i].log(level, type, msg, a, b, c);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> type, String msg, float a, float b, float c, float d) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, a, b, c, d);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> type, String msg, float a, float b, float c, float d, float e) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, a, b, c, d, e);
-			}
-		}
-	}
-
-
-	@Override
-	public void log(Level level, Class<?> type, String msg, float a, float b, float c, float d, float e, float f) {
-		int levelVal = level.intValue();
-		if(levelVal >= this.leastLevel) {
-			for(int i = 0, size = logs.length; i < size; i++) {
-				if(levels[i] > levelVal) {
-					break;
-				}
-				logs[i].log(level, type, msg, a, b, c, d, e, f);
 			}
 		}
 	}
@@ -530,9 +387,9 @@ public class LoggingMulti implements Logging, Closeable {
 	}
 
 
-	/** Closing this log wrapper closes the underlying {@link Logging} instance
-	 * which may also close other {@link LogWrapper LogWrappers} associated with
-	 * the underlying {@link Logging} instance.
+	/** Closing this log wrapper closes the underlying {@link LogService} instance
+	 * which may also close other {@link Logger LogWrappers} associated with
+	 * the underlying {@link LogService} instance.
 	 */
 	@Override
 	public void close() throws IOException {

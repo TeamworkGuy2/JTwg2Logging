@@ -3,7 +3,7 @@ package twg2.logging;
 import java.io.PrintStream;
 import java.util.logging.Level;
 
-import twg2.logging.Logging.Formatter;
+import twg2.logging.LogService.PrefixFormatter;
 
 /**
  * @author TeamworkGuy2
@@ -18,24 +18,24 @@ public final class Twg2Logs {
 	@SuppressWarnings("unused")
 	private final PrintStream outputStream;
 	@SuppressWarnings("unused")
-	private final Logging.Formatter format;
-	private final LoggingImpl inst;
+	private final LogService.PrefixFormatter format;
+	private final LogServiceImpl inst;
 
 
-	public Twg2Logs(Level level, PrintStream outputStream, Formatter format) {
+	public Twg2Logs(Level level, PrintStream outputStream, LogService.PrefixFormatter format) {
 		this.level = level;
 		this.outputStream = outputStream;
 		this.format = format;
-		this.inst = new LoggingImpl(level, outputStream, format);
+		this.inst = new LogServiceImpl(level, outputStream, format);
 	}
 
 
-	public LogWrapperImpl createLog(Class<?> cls) {
-		return new LogWrapperImpl(this.inst, cls);
+	public LoggerImpl createLog(Class<?> cls) {
+		return new LoggerImpl(this.inst, cls);
 	}
 
 
-	public static final boolean tryToInitialize(Level level, PrintStream outputStream, Logging.Formatter format) {
+	public static final boolean tryToInitialize(Level level, PrintStream outputStream, LogService.PrefixFormatter format) {
 		synchronized (lock) {
 			if(defaultInst != null) {
 				return false;
@@ -47,7 +47,7 @@ public final class Twg2Logs {
 	}
 
 
-	public static final Twg2Logs initialize(Level level, PrintStream outputStream, Logging.Formatter format) {
+	public static final Twg2Logs initialize(Level level, PrintStream outputStream, PrefixFormatter format) {
 		synchronized (lock) {
 			if(defaultInst != null) {
 				throw new IllegalStateException("cannot create default instance, initialize() has already been called");
