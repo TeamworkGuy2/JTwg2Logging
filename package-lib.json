@@ -1,5 +1,5 @@
 {
-	"version" : "0.3.0",
+	"version" : "0.3.1",
 	"name" : "jtwg2-logging",
 	"description" : "Simple logging interfaces and implementations to skip the complexity of a full logging framework, follows the java.util.logging API",
 	"homepage" : "https://github.com/TeamworkGuy2/JTwg2Logging",

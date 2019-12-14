@@ -14,24 +14,30 @@ public final class Twg2Logs {
 	private static final Object lock = new Object();
 
 	@SuppressWarnings("unused")
-	private final Level level;
-	@SuppressWarnings("unused")
 	private final PrintStream outputStream;
-	@SuppressWarnings("unused")
 	private final LogService.PrefixFormatter format;
-	private final LogServiceImpl inst;
+	private final LogServiceImpl rootLogService;
 
 
 	public Twg2Logs(Level level, PrintStream outputStream, LogService.PrefixFormatter format) {
-		this.level = level;
 		this.outputStream = outputStream;
 		this.format = format;
-		this.inst = new LogServiceImpl(level, outputStream, format);
+		this.rootLogService = new LogServiceImpl(level, outputStream, format);
 	}
 
 
 	public LoggerImpl createLog(Class<?> cls) {
-		return new LoggerImpl(this.inst, cls);
+		return new LoggerImpl(this.rootLogService, cls);
+	}
+
+
+	public LogService getRootLogService() {
+		return rootLogService;
+	}
+
+
+	public LogService.PrefixFormatter getFormat() {
+		return format;
 	}
 
 

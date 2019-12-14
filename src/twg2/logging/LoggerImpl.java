@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-/**
+/** A {@link Logger} implementation which wraps a {@link LogService}.
  * @author TeamworkGuy2
  * @since 2014-12-6
  */
 public class LoggerImpl implements Logger, Closeable {
-	private LogService log;
-	private Class<?> type;
-	private int level;
-	private Level levelObj;
+	protected LogService log;
+	protected Class<?> type;
+	protected int level;
+	protected Level levelObj;
 
 
 	public LoggerImpl(LogService log, Class<?> type) {
@@ -26,10 +26,10 @@ public class LoggerImpl implements Logger, Closeable {
 	}
 
 
-	/**
-	 * @param log
-	 * @param type
-	 * @param level
+	/** Create a logger which filters logs based on 'level' and logs them to 'log' service with 'type' as the source class
+	 * @param log the log service to log to
+	 * @param type the class type which will be calling this logger
+	 * @param level the default threshold log level
 	 */
 	public LoggerImpl(LogService log, Class<?> type, Level levelObj, int level) {
 		this.log = log;

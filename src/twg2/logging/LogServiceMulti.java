@@ -6,7 +6,8 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-/**
+/** A {@link LogService} which logs to multiple other {@link LogService LogServices}.
+ * A way to broadcast to multiple log destinations.
  * @author TeamworkGuy2
  * @since 2014-12-6
  */

@@ -2,9 +2,18 @@
 All notable changes to this project will be documented in this file.
 This project does its best to adhere to [Semantic Versioning](http://semver.org/).
 
+--------
+### [0.3.1](N/A) - 2019-12-14
+#### Added
+* Added Twg2Logs `getRootLogService()` and `getFormat() methods
+* Better documentation
+
+#### Changed
+* `LoggerImpl` fields changed from `private` to `protected`
+
 
 --------
-###[0.3.0](N/A) - 2017-12-30
+### [0.3.0](https://github.com/TeamworkGuy2/JTwg2Logging/commit/23ff00bd94a92d986de274ec0306bc885465ecd3) - 2017-12-30
 #### Changed
 * Upgrade to Java 9
 * Upgrade to JUnit 5
@@ -24,7 +33,7 @@ __Renamed everything except `Twg2Logs`__
 
 
 --------
-###[0.2.0](https://github.com/TeamworkGuy2/JTwg2Logging/commit/73213e7da2464e9bb1556e9fb6930539d9825d18) - 2016-2-28
+### [0.2.0](https://github.com/TeamworkGuy2/JTwg2Logging/commit/73213e7da2464e9bb1556e9fb6930539d9825d18) - 2016-2-28
 #### Changed
 * Moved LoggingImpl.PrefixFormat to separate LoggingPrefixFormat enum
 * Changed compiled jar path
@@ -32,7 +41,7 @@ __Renamed everything except `Twg2Logs`__
 
 
 --------
-###[0.1.0](https://github.com/TeamworkGuy2/JTwg2Logging/commit/482de2490a1c2b4aec02c1d9e2c2975677be8a57) - 2016-2-24
+### [0.1.0](https://github.com/TeamworkGuy2/JTwg2Logging/commit/482de2490a1c2b4aec02c1d9e2c2975677be8a57) - 2016-2-24
 #### Added
-* Moved existing code from [JFileIo] (https://github.com/TeamworkGuy2/JFileIo) library into this library
+* Moved existing code from [JFileIo](https://github.com/TeamworkGuy2/JFileIo) library into this library
 * Removed and modified some method signatures to more closely match the java.util.logging API

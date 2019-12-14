@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-/** A logging utility for logging message.
- * More controlled than System.out, I haven't quite gotten around to using {@link Logger}
+/** A {@link LogService} implementation for logging messages.
+ * More controlled than System.out. Fewer features but simpler to use than {@link java.util.logging.Logger}.
  * @author TeamworkGuy2
  * @since 2013-8-10
  */
